@@ -12,34 +12,31 @@ A = [1, 1+eps, 1+eps+(eps^3);
 %[vec,val] = eig(A);
 [m,n]=size(A);
 
-QGS = [];
 RGS = zeros(m);
-for j = 1:n
-    for i=1:j-1
-        vj = A(:,j); % Take the jth original basis vector
-        vi = A(i,:);
-        s = vj*vi;
-        vk = 
-        rp = QGS'*v; % Project v onto previous basis vectors
-    end
-    vnorm = norm(v); % Get the normalizing factor
-    v = v/vnorm; % Normalize what remains
-    QGS = [QGS, v]; % Append the result to the basis
-    RGS(1:j,j) = [rp; vnorm]; % update R
+RGS(1,1) = norm(A(:,1));
+QGS = [];
+QGS(:,1) = A(:,1)/RGS(1,1);
+
+for k = 2:n
+    RGS(1:k-1,k) = QGS(:,1:k-1)'*A(:,k);
+    QGS(:,k) = A(:,k)-QGS(:,1:k-1)*RGS(1:k-1,k);
+    RGS(k,k) = norm(QGS(:,k));
+    QGS(:,k) = QGS(:,k)/RGS(k,k); 
 end
 
 QH = eye(m);
+I = eye(m);
 RH = A;
 for j=1:n
-    normx = norm(RH(j:end,j));
-    s = -sign(RH(j,j);
-    u1 = RH(j,j) - s*normx;
-    w = RH(j:end,j)/u1;
-    w(1) = 1;
-    tau = -s*u1/normx;
+    e = I(:,j);
+    x = RH(:,j);
+    x(1:j-1) = zeros(j-1,1);
+    u = x + sign(x(j))*norm(x)*e;
+    H = I - 2*(u*u')/(u'*u);
     
-    RH(j:end,:) = RH(j:end,:)-(tau*w)*(w'*RH(j:end,:));
-    QH(:,j:end) = QH(:,j:end)-(Q(:,j:end)*w)*(tau*w)';
+    RH = H*RH;
+    QH = H*QH;
 end
+QH = QH';
 
 end
