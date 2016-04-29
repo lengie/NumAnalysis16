@@ -35,7 +35,7 @@ end;
 prob = prob*(1/((2*pi)^(n/2)));
 
 %empirical covariance
-VN = x*x';
+VN = (x*x')/n;
 S = svd(VN);
 
 
