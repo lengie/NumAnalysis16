@@ -25,7 +25,7 @@ mu = mean(z);
 sigma = cov(z);
 R = chol(sigma);
 
-%pdf
+%pdf, doesn't quite work like this. The matrix mult => 0
 V = cov(x);
 e = eig(V);
 prob=1;
@@ -33,5 +33,10 @@ for k=1:n
     prob = prob*(1/(sqrt(eig(k,k)))*exp(-(x*(V^(-1))*x')/2));
 end;
 prob = prob*(1/((2*pi)^(n/2)));
+
+%empirical covariance
+VN = x*x';
+S = svd(VN);
+
 
 end
